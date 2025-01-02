@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minijuego de Emparejar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(to bottom, #ffcccb, #ffe4e1);
+            margin: 0;
+            padding: 0;
+        }
+
+        #passwordScreen, #gameScreen {
+            display: none;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .card {
+            margin: 10px;
+            padding: 15px;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .hidden {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="passwordScreen" class="container">
+    <h1>Ingrese la contraseña</h1>
+    <input type="password" id="password" placeholder="Contraseña">
+    <button onclick="checkPassword()">Entrar</button>
+    <p id="error" style="color: red; display: none;">Contraseña incorrecta</p>
+</div>
+
+<div id="gameScreen" class="container">
+    <h1>Empareja las palabras</h1>
+    <div class="row" id="wordsContainer">
+        <!-- Words will be dynamically injected here -->
+    </div>
+</div>
+
+<script>
+    const correctPassword = "001";
+
+    const words = [
+        { word: "집", meaning: "casa", image: "https://via.placeholder.com/100" },
+        { word: "가정", meaning: "hogar", image: "https://via.placeholder.com/100" },
+        { word: "방", meaning: "habitación", image: "https://via.placeholder.com/100" },
+        // Add more entries as necessary from your PDF
+    ];
+
+    function checkPassword() {
+        const enteredPassword = document.getElementById("password").value;
+        const errorMessage = document.getElementById("error");
+
+        if (enteredPassword === correctPassword) {
+            document.getElementById("passwordScreen").style.display = "none";
+            document.getElementById("gameScreen").style.display = "flex";
+            loadGame();
+        } else {
+            errorMessage.style.display = "block";
+        }
+    }
+
+    function loadGame() {
+        const wordsContainer = document.getElementById("wordsContainer");
+
+        const shuffledWords = [...words, ...words].sort(() => Math.random() - 0.5);
+
+        shuffledWords.forEach((entry, index) => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.dataset.word = entry.word;
+
+            if (index % 2 === 0) {
+                card.textContent = entry.word;
+            } else if (index % 2 === 1) {
+                card.textContent = entry.meaning;
+            } else {
+                const img = document.createElement("img");
+                img.src = entry.image;
+                img.alt = entry.word;
+                card.appendChild(img);
+            }
+
+            wordsContainer.appendChild(card);
+        });
+    }
+</script>
+
+</body>
+</html>
