@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -122,7 +122,7 @@
 <!-- Pantalla de bienvenida -->
 <div id="welcomeScreen">
     <h1>¡Bienvenido al Juego de Vocabulario Coreano!</h1>
-    <p>Introduce la contraseña para comenzar.</p>
+    <p>Introduce la contraseña</p>
     <div class="input-container">
         <input type="password" id="password" placeholder="Contraseña">
         <button onclick="checkPassword()">Enter</button>
@@ -198,7 +198,31 @@
             wordDiv.style.top = `${Math.random() * 70}%`;
             wordDiv.draggable = true;
 
-            // Drag and drop
+            // Drag and drop para dispositivos táctiles
+            wordDiv.addEventListener("touchstart", e => {
+                e.target.style.zIndex = 1000;
+                e.target.style.position = "absolute";
+                document.body.appendChild(e.target);
+
+                function moveAt(pageX, pageY) {
+                    e.target.style.left = pageX - e.target.offsetWidth / 2 + "px";
+                    e.target.style.top = pageY - e.target.offsetHeight / 2 + "px";
+                }
+
+                moveAt(e.touches[0].pageX, e.touches[0].pageY);
+
+                function onTouchMove(event) {
+                    moveAt(event.touches[0].pageX, event.touches[0].pageY);
+                }
+
+                document.addEventListener("touchmove", onTouchMove);
+
+                e.target.addEventListener("touchend", () => {
+                    document.removeEventListener("touchmove", onTouchMove);
+                });
+            });
+
+            // Drag and drop para dispositivos no táctiles (ratón)
             wordDiv.addEventListener("dragstart", e => {
                 e.dataTransfer.setData("text", word.korean);
             });
@@ -212,6 +236,19 @@
             e.preventDefault();
             const droppedWord = e.dataTransfer.getData("text");
             if (droppedWord === randomWord.korean) {
+                score++;
+                document.getElementById("score").textContent = `Puntuación: ${score}`;
+                if (score === maxScore) {
+                    endGame();
+                } else {
+                    generateWords();
+                }
+            }
+        });
+
+        document.getElementById("targetSquare").addEventListener("touchend", e => {
+            const touchingWord = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+            if (touchingWord && touchingWord.className === "word" && touchingWord.textContent === randomWord.korean) {
                 score++;
                 document.getElementById("score").textContent = `Puntuación: ${score}`;
                 if (score === maxScore) {
