@@ -14,7 +14,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: #1e3a8a; /* Azul oscuro */
+            background: #b0e0e6; /* Azul suave */
             background: url('https://via.placeholder.com/1000') repeat; /* Simulación de ruido gaussiano */
             color: white;
         }
@@ -69,6 +69,11 @@
             font-size: 18px;
             font-weight: bold;
             color: #000;
+        }
+
+        #targetSquare {
+            font-size: 18px;
+            text-align: center;
         }
 
         .word {
@@ -128,7 +133,7 @@
 <div id="gameScreen">
     <div id="score">Puntuación: 0</div>
     <div id="gameArea">
-        <div class="square" id="targetSquare">Drop here</div>
+        <div class="square" id="targetSquare">arrastra aquí la palabra correcta</div>
         <div class="square" id="wordSquare">Palabra en español</div>
     </div>
 </div>
@@ -145,7 +150,7 @@
     let score = 0;
     const maxScore = 50;
 
-    // Palabras (pueden ampliarse)
+    // Palabras (añadir todas las palabras del PDF aquí)
     const words = [
         { korean: "집", spanish: "casa" },
         { korean: "가정", spanish: "hogar" },
@@ -198,7 +203,7 @@
                 e.dataTransfer.setData("text", word.korean);
             });
 
-            document.getElementById("gameScreen").appendChild(wordDiv);
+            gameArea.appendChild(wordDiv);
         });
 
         // Drop handler
@@ -227,7 +232,7 @@
     // Reiniciar el juego
     function resetGame() {
         score = 0;
-        document.getElementById("score").textContent = `Puntuación: 0`;
+        document.getElementById("score").textContent = "Puntuación: 0";
         document.getElementById("winScreen").style.display = "none";
         document.getElementById("gameScreen").style.display = "block";
         generateWords();
