@@ -67,9 +67,9 @@
     const correctPassword = "001";
 
     const words = [
-        { word: "집", meaning: "casa", image: "https://via.placeholder.com/100" },
-        { word: "가정", meaning: "hogar", image: "https://via.placeholder.com/100" },
-        { word: "방", meaning: "habitación", image: "https://via.placeholder.com/100" },
+        { word: "집", meaning: "casa" },
+        { word: "가정", meaning: "hogar" },
+        { word: "방", meaning: "habitación" },
         // Add more entries as necessary from your PDF
     ];
 
@@ -98,13 +98,8 @@
 
             if (index % 2 === 0) {
                 card.textContent = entry.word;
-            } else if (index % 2 === 1) {
-                card.textContent = entry.meaning;
             } else {
-                const img = document.createElement("img");
-                img.src = entry.image;
-                img.alt = entry.word;
-                card.appendChild(img);
+                card.textContent = entry.meaning;
             }
 
             wordsContainer.appendChild(card);
