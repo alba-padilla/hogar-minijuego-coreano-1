@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,12 +15,14 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: url('https://i.pinimg.com/736x/aa/0a/23/aa0a23223e947c77b95898a2e56bcb76.jpg') no-repeat center center fixed;
+            background: rgba(0, 0, 0, 0.2) url('https://i.pinimg.com/736x/aa/0a/23/aa0a23223e947c77b95898a2e56bcb76.jpg') no-repeat center center;
             background-size: cover;
             color: white;
         }
 
-        #welcomeScreen, #gameScreen, #winScreen {
+        #welcomeScreen,
+        #gameScreen,
+        #winScreen {
             display: none;
             text-align: center;
             width: 100%;
@@ -50,44 +53,43 @@
         #gameArea {
             position: relative;
             width: 90%;
-            height: 70%;
-            background: rgba(255, 255, 255, 0.8);
+            height: 60%;
+            background: #ffffff;
             margin: 20px auto;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             padding: 10px;
         }
 
         .square {
             width: 45%;
-            height: 45%;
+            height: 100%;
+            border: 2px solid #000;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 18px;
             font-weight: bold;
-            color: black;
-            border: 2px solid #000; /* Añadir borde para mejor visibilidad */
+            color: #000;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         #targetSquare {
-            width: 45%;
-            height: 45%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             font-size: 18px;
             text-align: center;
-            border: 2px solid #000; /* Añadir borde para mejor visibilidad */
+            display: flex;
+            flex-direction: column;
         }
 
         .word {
             position: absolute;
-            font-size: 16px;
-            font-family: Arial, sans-serif;
+            background: none;
+            border: none;
             color: black;
+            font-size: 18px;
             cursor: grab;
         }
 
@@ -122,153 +124,176 @@
                 font-size: 18px;
             }
         }
+
+        @media (max-width: 768px) {
+            .square {
+                font-size: 16px;
+                padding: 10px;
+            }
+        }
+
     </style>
 </head>
+
 <body>
-
-<!-- Pantalla de bienvenida -->
-<div id="welcomeScreen">
-    <h1>¡Bienvenido al Juego de Vocabulario Coreano!</h1>
-    <p>Introduce la contraseña</p>
-    <div class="input-container">
-        <input type="password" id="password" placeholder="Contraseña">
-        <button onclick="checkPassword()">Enter</button>
-    </div>
-</div>
-
-<!-- Pantalla de juego -->
-<div id="gameScreen">
-    <div id="score">Puntuación: 0</div>
-    <div id="gameArea">
-        <div class="square" id="wordSquare">Palabra en español</div>
-        <div class="square" id="targetSquare">
-            arrastra aquí <br> la palabra correcta
+    <!-- Pantalla de bienvenida -->
+    <div id="welcomeScreen">
+        <h1>¡Bienvenido al Juego de Vocabulario Coreano!</h1>
+        <p>Introduce la contraseña</p>
+        <div class="input-container">
+            <input type="password" id="password" placeholder="Contraseña">
+            <button onclick="checkPassword()">Enter</button>
         </div>
     </div>
-</div>
 
-<!-- Pantalla de victoria -->
-<div id="winScreen">
-    <h1>¡Felicidades! Has alcanzado la puntuación máxima.</h1>
-    <button onclick="resetGame()">Jugar de nuevo</button>
-</div>
+    <!-- Pantalla de juego -->
+    <div id="gameScreen">
+        <div id="score">Puntuación: 0</div>
+        <div id="gameArea">
+            <div class="square" id="wordSquare">Palabra en español</div>
+            <div class="square" id="targetSquare">
+                <p>Arrastra aquí</p>
+                <p>la palabra correcta</p>
+            </div>
+        </div>
+    </div>
 
-<script>
-    // Variables globales
-    const correctPassword = "juegocoreano1";
-    let score = 0;
-    const maxScore = 50;
+    <!-- Pantalla de victoria -->
+    <div id="winScreen">
+        <h1>¡Felicidades! Has alcanzado la puntuación máxima.</h1>
+        <button onclick="resetGame()">Jugar de nuevo</button>
+    </div>
 
-    // Palabras (añadir todas las palabras del PDF aquí)
-    const words = [
-        { korean: "집", spanish: "casa" },
-        { korean: "가정", spanish: "hogar" },
-        { korean: "방", spanish: "habitación" },
-        { korean: "거실", spanish: "comedor" }
-    ];
+    <script>
+        // Variables globales
+        const correctPassword = "juegocoreano1";
+        let score = 0;
+        const maxScore = 50;
 
-    // Mostrar pantalla de bienvenida
-    document.getElementById("welcomeScreen").style.display = "block";
+        // Palabras (añadir todas las palabras del PDF aquí)
+        const words = [
+            { korean: "집", spanish: "casa" },
+            { korean: "가정", spanish: "hogar" },
+            { korean: "방", spanish: "habitación" },
+            { korean: "거실", spanish: "comedor" }
+        ];
 
-    // Verificar contraseña
-    function checkPassword() {
-        const enteredPassword = document.getElementById("password").value;
-        if (enteredPassword === correctPassword) {
-            document.getElementById("welcomeScreen").style.display = "none";
-            document.getElementById("gameScreen").style.display = "block";
-            startGame();
-        } else {
-            alert("Contraseña incorrecta");
+        // Mostrar pantalla de bienvenida
+        document.getElementById("welcomeScreen").style.display = "block";
+
+        // Verificar contraseña
+        function checkPassword() {
+            const enteredPassword = document.getElementById("password").value;
+            if (enteredPassword === correctPassword) {
+                document.getElementById("welcomeScreen").style.display = "none";
+                document.getElementById("gameScreen").style.display = "block";
+                startGame();
+            } else {
+                alert("Contraseña incorrecta");
+            }
         }
-    }
 
-    // Iniciar el juego
-    function startGame() {
-        generateWords();
-    }
+        // Iniciar el juego
+        function startGame() {
+            generateWords();
+        }
 
-    // Generar palabras en la pantalla
-    function generateWords() {
-        const gameArea = document.getElementById("gameArea");
+        // Generar palabras en la pantalla
+        function generateWords() {
+            const gameArea = document.getElementById("gameArea");
+            // Limpiar palabras anteriores
+            document.querySelectorAll(".word").forEach(word => word.remove());
 
-        // Limpiar palabras anteriores
-        document.querySelectorAll(".word").forEach(word => word.remove());
+            // Palabra correcta
+            const randomWord = words[Math.floor(Math.random() * words.length)];
+            document.getElementById("wordSquare").textContent = randomWord.spanish;
 
-        // Palabra correcta
-        const randomWord = words[Math.floor(Math.random() * words.length)];
-        document.getElementById("wordSquare").textContent = randomWord.spanish;
-
-        // Crear palabras
-        words.forEach(word => {
-            const wordDiv = document.createElement("div");
-            wordDiv.textContent = word.korean;
-            wordDiv.className = "word";
-            wordDiv.style.left = `${Math.random() * 80}%`;
-            wordDiv.style.top = `${Math.random() * 70}%`;
-            wordDiv.draggable = true;
-
-            // Asegurarse de que las palabras no se superpongan con los cuadrados
-            const wordSquareRect = document.getElementById("wordSquare").getBoundingClientRect();
-            const targetSquareRect = document.getElementById("targetSquare").getBoundingClientRect();
-
-            // Recalcular la posición si las palabras se superponen con los cuadrados
-            while (
-                (parseInt(wordDiv.style.left) > wordSquareRect.left && parseInt(wordDiv.style.left) < wordSquareRect.right) ||
-                (parseInt(wordDiv.style.top) > wordSquareRect.top && parseInt(wordDiv.style.top) < wordSquareRect.bottom) ||
-                (parseInt(wordDiv.style.left) > targetSquareRect.left && parseInt(wordDiv.style.left) < targetSquareRect.right) ||
-                (parseInt(wordDiv.style.top) > targetSquareRect.top && parseInt(wordDiv.style.top) < targetSquareRect.bottom)
-            ) {
+            // Crear palabras
+            words.forEach(word => {
+                const wordDiv = document.createElement("div");
+                wordDiv.textContent = word.korean;
+                wordDiv.className = "word";
                 wordDiv.style.left = `${Math.random() * 80}%`;
                 wordDiv.style.top = `${Math.random() * 70}%`;
-            }
+                wordDiv.draggable = true;
 
-            // Drag and drop para dispositivos táctiles
-            wordDiv.addEventListener("touchstart", e => {
-                e.target.style.zIndex = 1000;
-                e.target.style.position = "absolute";
-                document.body.appendChild(e.target);
+                // Drag and drop para dispositivos táctiles
+                wordDiv.addEventListener("touchstart", e => {
+                    e.target.style.zIndex = 1000;
+                    e.target.style.position = "absolute";
+                    document.body.appendChild(e.target);
 
-                function moveAt(pageX, pageY) {
-                    e.target.style.left = pageX - e.target.offsetWidth / 2 + "px";
-                    e.target.style.top = pageY - e.target.offsetHeight / 2 + "px";
-                }
+                    function moveAt(pageX, pageY) {
+                        e.target.style.left = pageX - e.target.offsetWidth / 2 + "px";
+                        e.target.style.top = pageY - e.target.offsetHeight / 2 + "px";
+                    }
 
-                moveAt(e.touches[0].pageX, e.touches[0].pageY);
+                    moveAt(e.touches[0].pageX, e.touches[0].pageY);
 
-                function onTouchMove(event) {
-                    moveAt(event.touches[0].pageX, event.touches[0].pageY);
-                }
+                    function onTouchMove(event) {
+                        moveAt(event.touches[0].pageX, event.touches[0].pageY);
+                    }
 
-                document.addEventListener("touchmove", onTouchMove);
+                    document.addEventListener("touchmove", onTouchMove);
 
-                e.target.addEventListener("touchend", () => {
-                    document.removeEventListener("touchmove", onTouchMove);
+                    e.target.addEventListener("touchend", () => {
+                        document.removeEventListener("touchmove", onTouchMove);
+                    });
                 });
+
+                // Drag and drop para dispositivos no táctiles (ratón)
+                wordDiv.addEventListener("dragstart", e => {
+                    e.dataTransfer.setData("text", word.korean);
+                });
+
+                gameArea.appendChild(wordDiv);
             });
 
-            // Drag and drop para dispositivos no táctiles (ratón)
-            wordDiv.addEventListener("dragstart", e => {
-                e.dataTransfer.setData("text", word.korean);
-            });
-
-            gameArea.appendChild(wordDiv);
-        });
-
-        // Drop handler
-        document.getElementById("targetSquare").addEventListener("dragover", e => e.preventDefault());
-        document.getElementById("targetSquare").addEventListener("drop", e => {
-            e.preventDefault();
-            const droppedWord = e.dataTransfer.getData("text");
-            if (droppedWord === randomWord.korean) {
-                score++;
-                document.getElementById("score").textContent = `Puntuación: ${score}`;
-                if (score === maxScore) {
-                    endGame();
-                } else {
-                    generateWords();
+            // Drop handler
+            document.getElementById("targetSquare").addEventListener("dragover", e => e.preventDefault());
+            document.getElementById("targetSquare").addEventListener("drop", e => {
+                e.preventDefault();
+                const droppedWord = e.dataTransfer.getData("text");
+                if (droppedWord === randomWord.korean) {
+                    score++;
+                    document.getElementById("score").textContent = `Puntuación: ${score}`;
+                    if (score === maxScore) {
+                        endGame();
+                    } else {
+                        generateWords();
+                    }
                 }
-            }
-        });
+            });
 
-        document.getElementById("targetSquare").addEventListener("touchend", e => {
-            const touchingWord = document[_{{{CITATION{{{_1{](https://github.com/la9una/web/tree/ba1073ae044ebb7b538a3b13f0f9598f7c410bb6/docs%2Fbootstrap%2Falignci.md)
+            document.getElementById("targetSquare").addEventListener("touchend", e => {
+                const touchingWord = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+                if (touchingWord && touchingWord.className === "word" && touchingWord.textContent === randomWord.korean) {
+                    score++;
+                    document.getElementById("score").textContent = `Puntuación: ${score}`;
+                    if (score === maxScore) {
+                        endGame();
+                    } else {
+                        generateWords();
+                    }
+                }
+            });
+        }
+
+        // Finalizar el juego
+        function endGame() {
+            document.getElementById("gameScreen").style.display = "none";
+            document.getElementById("winScreen").style.display = "block";
+        }
+
+        // Reiniciar el juego
+        function resetGame() {
+            score = 0;
+            document.getElementById("score").textContent = "Puntuación: 0";
+            document.getElementById("winScreen").style.display = "none";
+            document.getElementById("gameScreen").style.display = "block";
+            generateWords();
+        }
+    </script>
+</body>
+
+</html>
