@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Juego de Vocabulario Coreano</title>
+  <title>RETO MARTES 6 de ENERO: HOGAR</title>
   <style>
     body {
       margin: 0;
@@ -110,7 +110,7 @@
 </head>
 <body>
   <div id="loginArea" class="active">
-    <h1>¡Bienvenido al Juego de Vocabulario Coreano!</h1>
+    <h1>¡Este es el primer juego de la semana :D!</h1>
     <p>Introduce la contraseña:</p>
     <input type="password" id="passwordInput" placeholder="Contraseña" />
     <button id="enterButton">Enter</button>
@@ -119,13 +119,13 @@
   <div id="gameArea">
     <div id="score">Puntuación: 0</div>
     <div id="wordSquare"></div>
-    <div id="targetSquare">이 한국어 단어는 <span id="blank">________</span>입니다</div>
+    <div id="targetSquare">이 단어는 <span id="blank">________</span> 입니다</div>
     <div id="questionText">¿Qué palabra es?</div>
     <div class="word-container" id="wordContainer"></div>
   </div>
 
   <script>
-    const correctPassword = "juegocoreano1";
+    const correctPassword = "dia1";
 
     document.getElementById("enterButton").addEventListener("click", checkPassword);
     document.getElementById("passwordInput").addEventListener("keypress", function (event) {
@@ -150,7 +150,55 @@
       { korean: "가정", spanish: "hogar" },
       { korean: "방", spanish: "habitación" },
       { korean: "거실", spanish: "comedor" },
-      // Añade aquí 40 palabras más...
+      { korean: "주방", spanish: "cocina" },
+      { korean: "화장실", spanish: "baño" },
+      { korean: "침실", spanish: "dormitorio" },
+      { korean: "욕실", spanish: "baño (donde hay bañera)" },
+      { korean: "현관", spanish: "entrada para los zapatos" },
+      { korean: "다락방", spanish: "ático" },
+      { korean: "지하실", spanish: "sótano" },
+      { korean: "베란다", spanish: "solana" },
+      { korean: "마당", spanish: "patio exterior (antes de entrar a la casa)" },
+      { korean: "정원", spanish: "jardín" },
+      { korean: "창문", spanish: "ventana" },
+      { korean: "문", spanish: "puerta" },
+      { korean: "천장", spanish: "techo (por dentro)" },
+      { korean: "바닥", spanish: "suelo" },
+      { korean: "벽", spanish: "pared" },
+      { korean: "가구", spanish: "mueble" },
+      { korean: "소파", spanish: "sofá" },
+      { korean: "테이블", spanish: "mesa" },
+      { korean: "의자", spanish: "silla" },
+      { korean: "침대", spanish: "cama" },
+      { korean: "옷장", spanish: "armario" },
+      { korean: "서랍장", spanish: "mueble de cajones" },
+      { korean: "식탁", spanish: "mesa de comedor" },
+      { korean: "책장", spanish: "estantería de libros" },
+      { korean: "선반", spanish: "repisas o estantes de repisas" },
+      { korean: "커튼", spanish: "cortina" },
+      { korean: "카펫", spanish: "alfombra" },
+      { korean: "조명", spanish: "luz (general)" },
+      { korean: "냉장고", spanish: "nevera" },
+      { korean: "가스레인지", spanish: "cocina de gas" },
+      { korean: "오븐", spanish: "horno" },
+      { korean: "전자레인지", spanish: "microondas" },
+      { korean: "세탁기", spanish: "lavadora" },
+      { korean: "청소기", spanish: "aspiradora" },
+      { korean: "에어컨", spanish: "aire acondicionado" },
+      { korean: "난로", spanish: "estufa" },
+      { korean: "벽지", spanish: "papel de la pared" },
+      { korean: "창틀", spanish: "marco de la ventana" },
+      { korean: "열쇠", spanish: "llaves" },
+      { korean: "수도꼭지", spanish: "grifo" },
+      { korean: "세면대", spanish: "lavabo" },
+      { korean: "거울", spanish: "espejo" },
+      { korean: "장식품", spanish: "decoración" },
+      { korean: "식기", spanish: "vajilla" },
+      { korean: "침구", spanish: "edredón, manta, almohada (cosas para dormir)" },
+      { korean: "휴지통", spanish: "papelera" },
+      { korean: "식기세척기", spanish: "lavavajillas" }
+
+      // Añade aquí las diferentes palabras...
     ];
 
     let currentWords = [];
