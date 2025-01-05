@@ -92,11 +92,6 @@
       color: white;
     }
 
-    .incorrect {
-      background: #d3d3d3 !important;
-      color: black;
-    }
-
     button {
       margin-top: 10px;
       padding: 8px 15px;
@@ -202,51 +197,74 @@
       // Añade aquí las diferentes palabras...
     ];
 
-let currentWords = [];
-  let currentWord = null;
-  let score = 0;
+let currentWords = []; // Palabras actualmente mostradas
+    let currentWord = null; // Palabra correcta actual
+    let score = 0; // Puntuación del jugador
 
-  function startGame() {
-    score = 0;
-    document.getElementById("score").textContent = `Puntuación: ${score}`;
-    generateWords();
-  }
-
-  function generateWords() {
-    const wordContainer = document.getElementById("wordContainer");
-    wordContainer.innerHTML = ""; // Limpiar palabras anteriores
-
-    currentWords = words.sort(() => 0.5 - Math.random()).slice(0, 5);
-    currentWord = currentWords[Math.floor(Math.random() * currentWords.length)];
-
-    document.getElementById("wordSquare").innerHTML = `<strong>${currentWord.spanish}</strong>`;
-
-    currentWords.forEach(word => {
-      const wordElement = document.createElement("div");
-      wordElement.textContent = word.korean;
-      wordElement.className = "word";
-
-      wordElement.addEventListener("click", () => checkWord(wordElement, word.korean));
-
-      wordContainer.appendChild(wordElement);
-    });
-  }
-
-  function checkWord(element, selectedWord) {
-    if (selectedWord === currentWord.korean) {
-      element.classList.add("correct");
-      score++;
+    // Inicia el juego
+    function startGame() {
+      score = 0;
       document.getElementById("score").textContent = `Puntuación: ${score}`;
-
-      // Reproducir el audio correspondiente a la palabra seleccionada
-      const audio = new Audio(`audio/${selectedWord}.mp3`);
-      audio.play();
-
-      setTimeout(generateWords, 500);
-    } else {
-      element.classList.add("incorrect");
+      generateWords();
     }
-  }
-</script>
+
+    // Genera las palabras a mostrar
+    function generateWords() {
+      const wordContainer = document.getElementById("wordContainer");
+      wordContainer.innerHTML = ""; // Limpia las palabras anteriores
+
+      // Mezcla y selecciona palabras
+      currentWords = words.sort(() => 0.5 - Math.random()).slice(0, Math.min(5, words.length));
+
+      // Termina el juego si ya no hay palabras
+      if (currentWords.length === 0) {
+        endGame();
+        return;
+      }
+
+      currentWord = currentWords[Math.floor(Math.random() * currentWords.length)];
+      document.getElementById("wordSquare").innerHTML = `<strong>${currentWord.spanish}</strong>`;
+
+      // Crea los botones de las palabras
+      currentWords.forEach(word => {
+        const wordElement = document.createElement("div");
+        wordElement.textContent = word.korean;
+        wordElement.className = "word";
+
+        wordElement.addEventListener("click", () => checkWord(wordElement, word.korean));
+
+        wordContainer.appendChild(wordElement);
+      });
+    }
+
+    // Verifica si la palabra seleccionada es correcta
+    function checkWord(element, selectedWord) {
+      if (selectedWord === currentWord.korean) {
+        element.classList.add("correct");
+        score++;
+        document.getElementById("score").textContent = `Puntuación: ${score}`;
+
+        // Reproducir audio de la palabra
+        const audio = new Audio(`audio/${selectedWord}.mp3`);
+        audio.play();
+
+        // Elimina la palabra correcta del conjunto
+        words.splice(words.findIndex(word => word.korean === currentWord.korean), 1);
+
+        setTimeout(generateWords, 500);
+      } else {
+        element.style.backgroundColor = "red"; // Cambia el color a rojo para indicar error
+        setTimeout(generateWords, 500); // Pasa a la siguiente palabra
+      }
+    }
+
+    // Finaliza el juego
+    function endGame() {
+      const incorrectCount = 51 - score; // Calcula los fallos
+      alert(`¡Felicidades! Has repasado todas las palabras.\nTuviste ${score} aciertos y ${incorrectCount} fallos.`);
+      document.getElementById("gameArea").classList.remove("active");
+      document.getElementById("loginArea").classList.add("active");
+    }
+  </script>
 </body>
 </html>
