@@ -125,25 +125,25 @@
   </div>
 
   <script>
-    const correctPassword = "dia1";
+  const correctPassword = "dia1";
 
-    document.getElementById("enterButton").addEventListener("click", checkPassword);
-    document.getElementById("passwordInput").addEventListener("keypress", function (event) {
-      if (event.key === "Enter") {
-        checkPassword();
-      }
-    });
-
-    function checkPassword() {
-      const input = document.getElementById("passwordInput").value;
-      if (input === correctPassword) {
-        document.getElementById("loginArea").classList.remove("active");
-        document.getElementById("gameArea").classList.add("active");
-        startGame();
-      } else {
-        alert("Contraseña incorrecta.");
-      }
+  document.getElementById("enterButton").addEventListener("click", checkPassword);
+  document.getElementById("passwordInput").addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+      checkPassword();
     }
+  });
+
+  function checkPassword() {
+    const input = document.getElementById("passwordInput").value;
+    if (input === correctPassword) {
+      document.getElementById("loginArea").classList.remove("active");
+      document.getElementById("gameArea").classList.add("active");
+      startGame();
+    } else {
+      alert("Contraseña incorrecta.");
+    }
+  }
 
     const words = [
       { korean: "집", spanish: "casa" },
@@ -201,51 +201,51 @@
       // Añade aquí las diferentes palabras...
     ];
 
-    let currentWords = [];
-    let currentWord = null;
-    let score = 0;
+let currentWords = [];
+  let currentWord = null;
+  let score = 0;
 
-    function startGame() {
-      score = 0;
-      document.getElementById("score").textContent = Puntuación: ${score};
-      generateWords();
+  function startGame() {
+    score = 0;
+    document.getElementById("score").textContent = `Puntuación: ${score}`;
+    generateWords();
+  }
+
+  function generateWords() {
+    const wordContainer = document.getElementById("wordContainer");
+    wordContainer.innerHTML = ""; // Limpiar palabras anteriores
+
+    currentWords = words.sort(() => 0.5 - Math.random()).slice(0, 5);
+    currentWord = currentWords[Math.floor(Math.random() * currentWords.length)];
+
+    document.getElementById("wordSquare").innerHTML = `<strong>${currentWord.spanish}</strong>`;
+
+    currentWords.forEach(word => {
+      const wordElement = document.createElement("div");
+      wordElement.textContent = word.korean;
+      wordElement.className = "word";
+
+      wordElement.addEventListener("click", () => checkWord(wordElement, word.korean));
+
+      wordContainer.appendChild(wordElement);
+    });
+  }
+
+  function checkWord(element, selectedWord) {
+    if (selectedWord === currentWord.korean) {
+      element.classList.add("correct");
+      score++;
+      document.getElementById("score").textContent = `Puntuación: ${score}`;
+
+      // Reproducir el audio correspondiente a la palabra seleccionada
+      const audio = new Audio(`audio/${selectedWord}.mp3`);
+      audio.play();
+
+      setTimeout(generateWords, 500);
+    } else {
+      element.classList.add("incorrect");
     }
-
-    function generateWords() {
-      const wordContainer = document.getElementById("wordContainer");
-      wordContainer.innerHTML = ""; // Limpiar palabras anteriores
-
-      currentWords = words.sort(() => 0.5 - Math.random()).slice(0, 5);
-      currentWord = currentWords[Math.floor(Math.random() * currentWords.length)];
-
-      document.getElementById("wordSquare").innerHTML = <strong>${currentWord.spanish}</strong>;
-
-      currentWords.forEach(word => {
-        const wordElement = document.createElement("div");
-        wordElement.textContent = word.korean;
-        wordElement.className = "word";
-
-        wordElement.addEventListener("click", () => checkWord(wordElement, word.korean));
-
-        wordContainer.appendChild(wordElement);
-      });
-    }
-
-    function checkWord(element, selectedWord) {
-      if (selectedWord === currentWord.korean) {
-        element.classList.add("correct");
-        score++;
-        document.getElementById("score").textContent = Puntuación: ${score};
-
-        // Reproducir el audio correspondiente a la palabra seleccionada
-        const audio = new Audio(audio/${selectedWord}.mp3);
-        audio.play();
-
-        setTimeout(generateWords, 500);
-      } else {
-        element.classList.add("incorrect");
-      }
-    }
-  </script>
+  }
+</script>
 </body>
 </html>
