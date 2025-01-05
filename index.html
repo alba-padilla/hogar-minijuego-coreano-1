@@ -18,21 +18,21 @@
       overflow: hidden;
     }
 
-    #loginArea, #gameArea, #endArea {
+    #loginArea, #gameArea {
       position: absolute;
-      width: 60%;
-      max-width: 400px;
-      background: rgba(255, 255, 255, 0.9);
+      width: 60%; /* Reducido desde el 80% */
+      max-width: 400px; /* Limita aún más el ancho */
+      max-height: 90vh;
+      background: white;
       border: 2px solid #000;
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-      padding: 20px;
+      padding: 10px;
       text-align: center;
       display: none;
       flex-direction: column;
-      border-radius: 10px;
     }
 
-    #loginArea.active, #gameArea.active, #endArea.active {
+    #loginArea.active, #gameArea.active {
       display: flex;
     }
 
@@ -93,8 +93,8 @@
     }
 
     .incorrect {
-      background: red !important;
-      color: white;
+      background: #d3d3d3 !important;
+      color: black;
     }
 
     button {
@@ -123,11 +123,6 @@
     <div id="targetSquare">이 단어는 <span id="blank">________</span> 입니다</div>
     <div id="questionText">¿Qué palabra es?</div>
     <div class="word-container" id="wordContainer"></div>
-  </div>
-
-  <div id="endArea">
-    <h1>¡Felicidades, has acertado todo!</h1>
-    <button onclick="location.reload()">Volver a jugar</button>
   </div>
 
   <script>
@@ -206,8 +201,7 @@
       // Añade más palabras aquí...
     ];
 
-    let currentWords = [...words];
-    let incorrectWords = [];
+    let currentWords = [];
     let currentWord = null;
     let score = 0;
 
@@ -221,25 +215,12 @@
       const wordContainer = document.getElementById("wordContainer");
       wordContainer.innerHTML = ""; // Limpiar palabras anteriores
 
-      if (currentWords.length === 0 && incorrectWords.length === 0) {
-        document.getElementById("gameArea").classList.remove("active");
-        document.getElementById("endArea").classList.add("active");
-        return;
-      }
+      currentWords = words.sort(() => 0.5 - Math.random()).slice(0, 5);
+      currentWord = currentWords[Math.floor(Math.random() * currentWords.length)];
 
-      if (currentWords.length === 0) {
-        currentWords = [...incorrectWords];
-        incorrectWords = [];
-      }
-
-      currentWord = currentWords.shift();
       document.getElementById("wordSquare").innerHTML = `<strong>${currentWord.spanish}</strong>`;
 
-      const options = [...currentWords, currentWord]
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 5);
-
-      options.forEach(word => {
+      currentWords.forEach(word => {
         const wordElement = document.createElement("div");
         wordElement.textContent = word.korean;
         wordElement.className = "word";
@@ -258,8 +239,6 @@
         setTimeout(generateWords, 500);
       } else {
         element.classList.add("incorrect");
-        incorrectWords.push(currentWord);
-        setTimeout(generateWords, 500);
       }
     }
   </script>
