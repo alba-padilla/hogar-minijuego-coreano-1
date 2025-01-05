@@ -9,7 +9,8 @@
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background: rgba(176, 224, 230, 0.2);
+      background: url('./fondo/fondo.png') no-repeat center center fixed;
+      background-size: cover;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -17,21 +18,21 @@
       overflow: hidden;
     }
 
-    #loginArea, #gameArea {
+    #loginArea, #gameArea, #endArea {
       position: absolute;
-      width: 80%;
-      max-width: 600px;
-      max-height: 90vh;
-      background: white;
+      width: 60%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.9);
       border: 2px solid #000;
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-      padding: 10px;
+      padding: 20px;
       text-align: center;
       display: none;
       flex-direction: column;
+      border-radius: 10px;
     }
 
-    #loginArea.active, #gameArea.active {
+    #loginArea.active, #gameArea.active, #endArea.active {
       display: flex;
     }
 
@@ -92,8 +93,8 @@
     }
 
     .incorrect {
-      background: #d3d3d3 !important;
-      color: black;
+      background: red !important;
+      color: white;
     }
 
     button {
@@ -122,6 +123,11 @@
     <div id="targetSquare">이 단어는 <span id="blank">________</span> 입니다</div>
     <div id="questionText">¿Qué palabra es?</div>
     <div class="word-container" id="wordContainer"></div>
+  </div>
+
+  <div id="endArea">
+    <h1>¡Felicidades, has acertado todo!</h1>
+    <button onclick="location.reload()">Volver a jugar</button>
   </div>
 
   <script>
@@ -196,12 +202,12 @@
       { korean: "식기", spanish: "vajilla" },
       { korean: "침구", spanish: "edredón, manta, almohada (cosas para dormir)" },
       { korean: "휴지통", spanish: "papelera" },
-      { korean: "식기세척기", spanish: "lavavajillas" }
-
-      // Añade aquí las diferentes palabras...
+      { korean: "식기세척기", spanish: "lavavajillas" },
+      // Añade más palabras aquí...
     ];
 
-    let currentWords = [];
+    let currentWords = [...words];
+    let incorrectWords = [];
     let currentWord = null;
     let score = 0;
 
@@ -215,12 +221,25 @@
       const wordContainer = document.getElementById("wordContainer");
       wordContainer.innerHTML = ""; // Limpiar palabras anteriores
 
-      currentWords = words.sort(() => 0.5 - Math.random()).slice(0, 5);
-      currentWord = currentWords[Math.floor(Math.random() * currentWords.length)];
+      if (currentWords.length === 0 && incorrectWords.length === 0) {
+        document.getElementById("gameArea").classList.remove("active");
+        document.getElementById("endArea").classList.add("active");
+        return;
+      }
 
+      if (currentWords.length === 0) {
+        currentWords = [...incorrectWords];
+        incorrectWords = [];
+      }
+
+      currentWord = currentWords.shift();
       document.getElementById("wordSquare").innerHTML = `<strong>${currentWord.spanish}</strong>`;
 
-      currentWords.forEach(word => {
+      const options = [...currentWords, currentWord]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 5);
+
+      options.forEach(word => {
         const wordElement = document.createElement("div");
         wordElement.textContent = word.korean;
         wordElement.className = "word";
@@ -236,16 +255,14 @@
         element.classList.add("correct");
         score++;
         document.getElementById("score").textContent = `Puntuación: ${score}`;
-
-        // Reproducir el audio correspondiente a la palabra seleccionada
-        const audio = new Audio(`audio/${selectedWord}.mp3`);
-        audio.play();
-
         setTimeout(generateWords, 500);
       } else {
         element.classList.add("incorrect");
+        incorrectWords.push(currentWord);
+        setTimeout(generateWords, 500);
       }
     }
   </script>
 </body>
 </html>
+
