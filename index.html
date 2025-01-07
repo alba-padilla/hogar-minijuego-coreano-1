@@ -18,7 +18,7 @@
       overflow: hidden;
     }
 
-    #loginArea, #gameArea {
+    #loginArea, #gameArea, #formArea {
       position: absolute;
       width: 60%;
       max-width: 400px;
@@ -32,7 +32,7 @@
       flex-direction: column;
     }
 
-    #loginArea.active, #gameArea.active {
+    #loginArea.active, #gameArea.active, #formArea.active {
       display: flex;
     }
 
@@ -113,7 +113,7 @@
   </div>
 
 <!-- Form Area -->
-<div id="formArea" style="display: none;">
+<div id="formArea" class="active;">
   <h2>Introduce tus datos para sumar tus puntos</h2>
   <input type="text" id="nameInput" placeholder="Nombre" />
   <input type="email" id="emailInput" placeholder="Correo Electrónico" />
