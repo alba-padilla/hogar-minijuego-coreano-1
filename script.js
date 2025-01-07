@@ -76,7 +76,7 @@ function endGame() {
 
 // Función que envía los datos a Google Sheets (se ejecuta en tiempo real y al final del juego).
 function sendDataToGoogleSheets(score) {
-  fetch("https://script.google.com/macros/s/AKfycbyFCbkLy-8ZpoxB3W2HlWmOiEABUyHybJLgJ4602ZhMpCtkNuJDunCIi3CJlzhkc_3uLQ/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbyb2DR31LeMu-WUewilKHBbO7jZ5rKHwHTcbP4JiHda/dev", {
     method: "POST",
     body: JSON.stringify({
       nombre: playerName,
