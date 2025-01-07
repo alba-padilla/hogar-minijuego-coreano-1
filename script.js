@@ -40,8 +40,8 @@ submitButton.addEventListener("click", () => {
   playerEmail = correo;
 
   // Ocultar el formulario y mostrar el área del juego
-  formArea.classList.remove("active");  // Oculta el formulario
-  document.getElementById("gameArea").classList.add("active");  // Muestra el área del juego
+  formArea.style.display = "none";  // Ahora oculta el formulario
+  document.getElementById("gameArea").style.display = "block";  // Muestra el área del juego
 
   startGame();
 });
@@ -76,7 +76,7 @@ fetch("https://script.google.com/macros/s/AKfycbyFCbkLy-8ZpoxB3W2HlWmOiEABUyHybJ
     if (response.ok) {
       alert("¡Datos enviados correctamente!");
       formArea.style.display = "none";
-      document.getElementById("gameArea").classList.add("active");
+      document.getElementById("gameArea").style.display = "block";  // Asegura que se muestre el área del juego
       startGame(); // Inicia el juego después de enviar los datos correctamente.
     } else {
       alert("Error al enviar los datos. Inténtalo nuevamente.");
@@ -88,7 +88,8 @@ fetch("https://script.google.com/macros/s/AKfycbyFCbkLy-8ZpoxB3W2HlWmOiEABUyHybJ
 function endGame() {
   finalScore = score; // Asigna la puntuación final.
   alert(`¡Felicidades! Has repasado todas las palabras.\nTu puntuación final es ${finalScore}.`);
-  document.getElementById("gameArea").classList.remove("active");
-  formArea.style.display = "flex";
+  document.getElementById("gameArea").style.display = "none"; // Oculta el área de juego
+  formArea.style.display = "flex";  // Muestra nuevamente el formulario
 }
+
 
