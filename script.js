@@ -4,6 +4,27 @@ const emailInput = document.getElementById("emailInput");
 const submitButton = document.getElementById("submitButton");
 
 let finalScore = 0; // Se usará para guardar la puntuación final.
+let playerName = ""; // Nombre del jugador.
+let playerEmail = ""; // Email del jugador.
+
+document.getElementById("enterButton").addEventListener("click", checkPassword);
+document.getElementById("passwordInput").addEventListener("keypress", function (event) {
+  if (event.key === "Enter") {
+    checkPassword();
+  }
+});
+
+function checkPassword() {
+  const input = document.getElementById("passwordInput").value;
+  const correctPassword = "dia1";
+
+  if (input === correctPassword) {
+    document.getElementById("loginArea").classList.remove("active");
+    formArea.style.display = "flex"; // Muestra el formulario después de ingresar la contraseña correctamente.
+  } else {
+    alert("Contraseña incorrecta.");
+  }
+}
 
 submitButton.addEventListener("click", () => {
   const nombre = nameInput.value.trim();
@@ -14,12 +35,16 @@ submitButton.addEventListener("click", () => {
     return;
   }
 
+  // Guarda los datos del jugador.
+  playerName = nombre;
+  playerEmail = correo;
+
   // Aquí se envían los datos a Google Sheets.
   fetch("https://script.google.com/macros/s/AKfycbyFCbkLy-8ZpoxB3W2HlWmOiEABUyHybJLgJ4602ZhMpCtkNuJDunCIi3CJlzhkc_3uLQ/exec", {
     method: "POST",
     body: JSON.stringify({
-      nombre,
-      correo,
+      nombre: playerName,
+      correo: playerEmail,
       puntuacion: finalScore, // La puntuación final del jugador.
       fecha: new Date().toISOString(),
     }),
@@ -32,6 +57,7 @@ submitButton.addEventListener("click", () => {
         alert("¡Datos enviados correctamente!");
         formArea.style.display = "none";
         document.getElementById("gameArea").classList.add("active");
+        startGame(); // Inicia el juego después de enviar los datos correctamente.
       } else {
         alert("Error al enviar los datos. Inténtalo nuevamente.");
       }
@@ -39,11 +65,10 @@ submitButton.addEventListener("click", () => {
     .catch(error => console.error("Error:", error));
 });
 
-// Actualiza finalScore al finalizar el juego:
+// Actualiza finalScore al finalizar el juego.
 function endGame() {
   finalScore = score; // Asigna la puntuación final.
-  alert(`Tu puntuación final es ${finalScore}`);
+  alert(`¡Felicidades! Has repasado todas las palabras.\nTu puntuación final es ${finalScore}.`);
   document.getElementById("gameArea").classList.remove("active");
   formArea.style.display = "flex";
 }
-
