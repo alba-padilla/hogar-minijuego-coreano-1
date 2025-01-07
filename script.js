@@ -108,7 +108,7 @@ function updateScore() {
 // Cuando el jugador abandona el juego o cierra la ventana, enviamos el puntaje.
 window.addEventListener("beforeunload", () => {
   if (!gameAbandoned) {
-    gameAbandoned = true;  // Indicamos que el jugador abandonó el juego.
-    sendDataToGoogleSheets(score);  // Enviamos la puntuación.
+    gameAbandoned = true;  // Indicamos que el jugador abandonó el juego
+    sendDataToGoogleSheets(score);
   }
 });
