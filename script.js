@@ -43,41 +43,46 @@ submitButton.addEventListener("click", () => {
   formArea.classList.remove("active");  // Oculta el formulario
   document.getElementById("gameArea").classList.add("active");  // Muestra el área del juego
 
-   startGame(); 
+  startGame();
 });
 
 // Permitir que el botón "Jugar" también funcione con la tecla Enter
-document.getElementById("emailInput").addEventListener("keypress", function (event) {
+nameInput.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
     submitButton.click();  // Simula un clic en el botón "Jugar"
   }
 });
 
-  // Aquí se envían los datos a Google Sheets.
-  fetch("https://script.google.com/macros/s/AKfycbyFCbkLy-8ZpoxB3W2HlWmOiEABUyHybJLgJ4602ZhMpCtkNuJDunCIi3CJlzhkc_3uLQ/exec", {
-    method: "POST",
-    body: JSON.stringify({
-      nombre: playerName,
-      correo: playerEmail,
-      puntuacion: finalScore, // La puntuación final del jugador.
-      fecha: new Date().toISOString(),
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then(response => {
-      if (response.ok) {
-        alert("¡Datos enviados correctamente!");
-        formArea.style.display = "none";
-        document.getElementById("gameArea").classList.add("active");
-        startGame(); // Inicia el juego después de enviar los datos correctamente.
-      } else {
-        alert("Error al enviar los datos. Inténtalo nuevamente.");
-      }
-    })
-    .catch(error => console.error("Error:", error));
+emailInput.addEventListener("keypress", function (event) {
+  if (event.key === "Enter") {
+    submitButton.click();  // Simula un clic en el botón "Jugar"
+  }
 });
+
+// Aquí se envían los datos a Google Sheets.
+fetch("https://script.google.com/macros/s/AKfycbyFCbkLy-8ZpoxB3W2HlWmOiEABUyHybJLgJ4602ZhMpCtkNuJDunCIi3CJlzhkc_3uLQ/exec", {
+  method: "POST",
+  body: JSON.stringify({
+    nombre: playerName,
+    correo: playerEmail,
+    puntuacion: finalScore, // La puntuación final del jugador.
+    fecha: new Date().toISOString(),
+  }),
+  headers: {
+    "Content-Type": "application/json",
+  },
+})
+  .then(response => {
+    if (response.ok) {
+      alert("¡Datos enviados correctamente!");
+      formArea.style.display = "none";
+      document.getElementById("gameArea").classList.add("active");
+      startGame(); // Inicia el juego después de enviar los datos correctamente.
+    } else {
+      alert("Error al enviar los datos. Inténtalo nuevamente.");
+    }
+  })
+  .catch(error => console.error("Error:", error));
 
 // Actualiza finalScore al finalizar el juego.
 function endGame() {
@@ -86,3 +91,4 @@ function endGame() {
   document.getElementById("gameArea").classList.remove("active");
   formArea.style.display = "flex";
 }
+
