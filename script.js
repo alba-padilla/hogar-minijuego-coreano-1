@@ -39,6 +39,12 @@ submitButton.addEventListener("click", () => {
   playerName = nombre;
   playerEmail = correo;
 
+  document.getElementById('btn-jugar').addEventListener('click', function() {
+    // Oculta el formulario
+    document.getElementById('formulario').style.display = 'none';
+
+});
+
   // Aquí se envían los datos a Google Sheets.
   fetch("https://script.google.com/macros/s/AKfycbyFCbkLy-8ZpoxB3W2HlWmOiEABUyHybJLgJ4602ZhMpCtkNuJDunCIi3CJlzhkc_3uLQ/exec", {
     method: "POST",
