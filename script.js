@@ -1,66 +1,49 @@
-const correctPassword = "dia1"; // Contraseña
-const webhookURL = "https://script.google.com/macros/s/AKfycbz0ADGlU5oVJglt6EpcqGSUx1E2QFm7u5ta0jd_UMMm4nkiOoPhi5ouIJvkuj_UZxEz8Q/exec"; // Reemplaza con la URL de tu webhook
-let score = 0;
+const formArea = document.getElementById("formArea");
+const nameInput = document.getElementById("nameInput");
+const emailInput = document.getElementById("emailInput");
+const submitButton = document.getElementById("submitButton");
 
-function checkPassword() {
-  const input = document.getElementById("passwordInput").value;
-  if (input === correctPassword) {
-    document.getElementById("loginArea").classList.remove("active");
-    document.getElementById("formArea").style.display = "block";
-  } else {
-    alert("Contraseña incorrecta.");
-  }
-}
+let finalScore = 0; // Se usará para guardar la puntuación final.
 
-document.getElementById("submitButton").addEventListener("click", () => {
-  const name = document.getElementById("nameInput").value;
-  const email = document.getElementById("emailInput").value;
+submitButton.addEventListener("click", () => {
+  const nombre = nameInput.value.trim();
+  const correo = emailInput.value.trim();
 
-  if (name && email) {
-    document.getElementById("formArea").style.display = "none";
-    document.getElementById("gameArea").style.display = "block";
-
-    // Enviar datos iniciales al webhook
-    const data = {
-      name: name,
-      email: email,
-      score: score,
-    };
-
-    fetch(webhookURL, {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(response => response.json())
-      .then(data => console.log("Datos guardados:", data))
-      .catch(error => console.error("Error al guardar los datos:", error));
-  } else {
+  if (!nombre || !correo) {
     alert("Por favor, completa todos los campos.");
+    return;
   }
+
+  // Aquí se envían los datos a Google Sheets.
+  fetch("https://script.google.com/macros/s/AKfycbyFCbkLy-8ZpoxB3W2HlWmOiEABUyHybJLgJ4602ZhMpCtkNuJDunCIi3CJlzhkc_3uLQ/exec", {
+    method: "POST",
+    body: JSON.stringify({
+      nombre,
+      correo,
+      puntuacion: finalScore, // La puntuación final del jugador.
+      fecha: new Date().toISOString(),
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then(response => {
+      if (response.ok) {
+        alert("¡Datos enviados correctamente!");
+        formArea.style.display = "none";
+        document.getElementById("gameArea").classList.add("active");
+      } else {
+        alert("Error al enviar los datos. Inténtalo nuevamente.");
+      }
+    })
+    .catch(error => console.error("Error:", error));
 });
 
-function checkWord(element, selectedWord) {
-  if (selectedWord === currentWord.korean) {
-    element.classList.add("correct");
-    score++;
-    document.getElementById("score").textContent = `Puntuación: ${score}`;
-
-    // Actualizar puntuación en el webhook
-    const updateData = {
-      name: name,
-      email: email,
-      score: score,
-    };
-
-    fetch(webhookURL, {
-      method: "POST",
-      body: JSON.stringify(updateData),
-      headers: { "Content-Type": "application/json" },
-    });
-
-    setTimeout(generateWords, 500);
-  } else {
-    element.classList.add("incorrect");
-  }
+// Actualiza finalScore al finalizar el juego:
+function endGame() {
+  finalScore = score; // Asigna la puntuación final.
+  alert(`Tu puntuación final es ${finalScore}`);
+  document.getElementById("gameArea").classList.remove("active");
+  formArea.style.display = "flex";
 }
+
