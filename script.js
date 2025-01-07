@@ -39,6 +39,18 @@ submitButton.addEventListener("click", () => {
   playerName = nombre;
   playerEmail = correo;
 
+  // Ocultar el formulario y mostrar el área del juego
+  formArea.classList.remove("active");  // Oculta el formulario
+  document.getElementById("gameArea").classList.add("active");  // Muestra el área del juego
+
+   startGame(); 
+});
+
+// Permitir que el botón "Jugar" también funcione con la tecla Enter
+document.getElementById("emailInput").addEventListener("keypress", function (event) {
+  if (event.key === "Enter") {
+    submitButton.click();  // Simula un clic en el botón "Jugar"
+  }
 });
 
   // Aquí se envían los datos a Google Sheets.
