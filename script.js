@@ -43,8 +43,8 @@ submitButton.addEventListener("click", () => {
   playerEmail = correo;
 
   // Ocultar el formulario y mostrar el área del juego
-  formArea.style.display = "none";  // Ahora oculta el formulario
-  document.getElementById("gameArea").style.display = "block";  // Muestra el área del juego
+  formArea.style.display = "none"; // Oculta el formulario
+  document.getElementById("gameArea").style.display = "block"; // Muestra el área del juego
 
   startGame();
 });
@@ -52,43 +52,49 @@ submitButton.addEventListener("click", () => {
 // Permitir que el botón "Jugar" también funcione con la tecla Enter
 nameInput.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
-    submitButton.click();  // Simula un clic en el botón "Jugar"
+    submitButton.click(); // Simula un clic en el botón "Jugar"
   }
 });
 
 emailInput.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
-    submitButton.click();  // Simula un clic en el botón "Jugar"
+    submitButton.click(); // Simula un clic en el botón "Jugar"
   }
 });
 
 // Actualiza finalScore al finalizar el juego.
 function endGame() {
   finalScore = score; // Asigna la puntuación final.
-  alert(¡Felicidades! Has repasado todas las palabras.\nTu puntuación final es ${finalScore}.);
+  alert(`¡Felicidades! Has repasado todas las palabras.\nTu puntuación final es ${finalScore}.`);
 
   // Enviar los datos al Google Sheets al final del juego.
   sendDataToGoogleSheets(finalScore);
-  
+
   document.getElementById("gameArea").style.display = "none"; // Oculta el área de juego
-  formArea.style.display = "flex";  // Muestra nuevamente el formulario
+  formArea.style.display = "flex"; // Muestra nuevamente el formulario
 }
 
 // Función que envía los datos a Google Sheets (se ejecuta en tiempo real y al final del juego).
 function sendDataToGoogleSheets(score) {
-  fetch("https://script.google.com/macros/s/AKfycbyFCbkLy-8ZpoxB3W2HlWmOiEABUyHybJLgJ4602ZhMpCtkNuJDunCIi3CJlzhkc_3uLQ/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbz0ADGlU5oVJglt6EpcqGSUx1E2QFm7u5ta0jd_UMMm4nkiOoPhi5ouIJvkuj_UZxEz8Q/exec", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      name: playerName,  // Aquí solo envías nombre
-      email: playerEmail // Aquí solo envías correo
-    })
+      name: playerName, // Envía el nombre
+      email: playerEmail, // Envía el correo
+      score: score, // Envía la puntuación
+    }),
   })
-  .then(response => response.json())
-  .then(data => console.log("Datos guardados con éxito:", data))
-  .catch(error => console.error("Error al guardar los datos:", error));
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Datos guardados con éxito:", data);
+      if (data.success) {
+        alert("¡Datos enviados correctamente!");
+      }
+    })
+    .catch((error) => console.error("Error al guardar los datos:", error));
 }
 
 // Enviar puntaje en tiempo real cuando cambia.
@@ -99,7 +105,8 @@ function updateScore() {
 // Cuando el jugador abandona el juego o cierra la ventana, enviamos el puntaje.
 window.addEventListener("beforeunload", () => {
   if (!gameAbandoned) {
-    gameAbandoned = true;  // Indicamos que el jugador abandonó el juego
+    gameAbandoned = true; // Indicamos que el jugador abandonó el juego
     sendDataToGoogleSheets(score);
   }
 });
+
