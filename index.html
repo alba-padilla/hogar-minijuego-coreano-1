@@ -287,27 +287,6 @@ let currentWords = []; // Palabras actualmente mostradas
       document.getElementById("gameArea").classList.remove("active");
       document.getElementById("loginArea").classList.add("active");
 
-       // Obtener los valores de nombre y correo electrónico desde los campos del formulario
-    const name = document.getElementById("nameInput").value.trim();
-    const email = document.getElementById("emailInput").value.trim();
-
-    // Verifica que el nombre y el correo sean válidos antes de enviar
-    if (name && email) {
-      // Enviar los datos al servidor
-      fetch("https://script.google.com/macros/s/AKfycbyFCbkLy-8ZpoxB3W2HlWmOiEABUyHybJLgJ4602ZhMpCtkNuJDunCIi3CJlzhkc_3uLQ/exec", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ name, email, score })
-      })
-      .then(response => response.json())
-      .then(data => console.log("Datos guardados con éxito:", data))
-      .catch(error => console.error("Error al guardar los datos:", error));
-    } else {
-      console.log("Nombre o correo no válidos");
-    }
-
     // Restablecer áreas de visualización
     document.getElementById("gameArea").classList.remove("active");
     document.getElementById("loginArea").classList.add("active");
