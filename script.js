@@ -65,72 +65,50 @@ emailInput.addEventListener("keypress", function (event) {
 // Actualiza finalScore al finalizar el juego.
 function endGame() {
   finalScore = score; // Asigna la puntuación final.
-  alert(`¡Felicidades! Has repasado todas las palabras.\nTu puntuación final es ${finalScore}.`);
+  alert(¡Felicidades! Has repasado todas las palabras.\nTu puntuación final es ${finalScore}.);
 
   // Enviar los datos al Google Sheets al final del juego.
-  enviarDatos(playerName, playerEmail, finalScore);
+  sendDataToGoogleSheets(finalScore);
   
   document.getElementById("gameArea").style.display = "none"; // Oculta el área de juego
   formArea.style.display = "flex";  // Muestra nuevamente el formulario
 }
 
-// Función para enviar los datos al Web App de Google Apps Script
-function enviarDatos(nombre, correo, puntuacion) {
-  const url = "TU_URL_DEL_WEB_APP"; // Reemplaza con la URL de tu Web App de Google Apps Script
-
-  const datos = {
-    nombre: nombre,
-    correo: correo,
-    puntuacion: puntuacion
-  };
-
-  fetch(url, {
+// Función que envía los datos a Google Sheets (se ejecuta en tiempo real y al final del juego).
+function sendDataToGoogleSheets(score) {
+  fetch("https://script.google.com/macros/s/AKfycbz0ADGlU5oVJglt6EpcqGSUx1E2QFm7u5ta0jd_UMMm4nkiOoPhi5ouIJvkuj_UZxEz8Q/exec", {
     method: "POST",
+    body: JSON.stringify({
+      nombre: playerName,
+      correo: playerEmail,
+      puntuacion: score,
+      fecha: new Date().toISOString(),
+    }),
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(datos)
   })
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`Error en la solicitud: ${response.status}`);
+      if (response.ok) {
+        console.log("Datos enviados correctamente!");
+      } else {
+        console.error("Error al enviar los datos.");
       }
-      return response.text();
-    })
-    .then(data => {
-      console.log("Respuesta del servidor:", data);
-      alert("¡Datos enviados correctamente!");
     })
     .catch(error => {
       console.error("Error al enviar los datos:", error);
-      alert("Hubo un error al enviar los datos. Por favor, inténtalo de nuevo.");
     });
 }
 
 // Enviar puntaje en tiempo real cuando cambia.
 function updateScore() {
-  enviarDatos(playerName, playerEmail, score);
+  sendDataToGoogleSheets(score);
 }
 
 // Cuando el jugador abandona el juego o cierra la ventana, enviamos el puntaje.
 window.addEventListener("beforeunload", () => {
   if (!gameAbandoned) {
     gameAbandoned = true;  // Indicamos que el jugador abandonó el juego
-    enviarDatos(playerName, playerEmail, score);
+    sendDataToGoogleSheets(score);
   }
 });
-
-// Ejemplo de implementación: Llamar a enviarDatos() después de jugar
-document.getElementById("guardar-puntuacion").addEventListener("click", function () {
-  if (playerName && playerEmail && finalScore !== null) {
-    enviarDatos(playerName, playerEmail, finalScore);
-  } else {
-    alert("Por favor, completa todos los campos antes de guardar.");
-  }
-});
-
-// Función ficticia para calcular la puntuación (reemplázala con tu lógica real)
-function calcularPuntuacion() {
-  // Aquí implementas cómo se calcula la puntuación del juego
-  return Math.floor(Math.random() * 100); // Ejemplo: puntuación aleatoria entre 0 y 100
-}
