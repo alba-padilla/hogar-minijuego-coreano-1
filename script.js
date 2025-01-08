@@ -76,28 +76,19 @@ function endGame() {
 
 // Función que envía los datos a Google Sheets (se ejecuta en tiempo real y al final del juego).
 function sendDataToGoogleSheets(score) {
-  fetch("https://script.google.com/macros/s/AKfycbz0ADGlU5oVJglt6EpcqGSUx1E2QFm7u5ta0jd_UMMm4nkiOoPhi5ouIJvkuj_UZxEz8Q/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbyFCbkLy-8ZpoxB3W2HlWmOiEABUyHybJLgJ4602ZhMpCtkNuJDunCIi3CJlzhkc_3uLQ/exec", {
     method: "POST",
-    body: JSON.stringify({
-      nombre: playerName,
-      correo: playerEmail,
-      puntuacion: score,
-      fecha: new Date().toISOString(),
-    }),
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
-  })
-    .then(response => {
-      if (response.ok) {
-        console.log("Datos enviados correctamente!");
-      } else {
-        console.error("Error al enviar los datos.");
-      }
+    body: JSON.stringify({
+      name: playerName,  // Aquí solo envías nombre
+      email: playerEmail // Aquí solo envías correo
     })
-    .catch(error => {
-      console.error("Error al enviar los datos:", error);
-    });
+  })
+  .then(response => response.json())
+  .then(data => console.log("Datos guardados con éxito:", data))
+  .catch(error => console.error("Error al guardar los datos:", error));
 }
 
 // Enviar puntaje en tiempo real cuando cambia.
