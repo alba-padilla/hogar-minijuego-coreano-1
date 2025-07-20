@@ -1,270 +1,257 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VOCABULARIO: HOGAR</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background: url('fondo/fondo2.png') no-repeat center center fixed;
-      background-size: cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
+import React, { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils';
+
+interface Word {
+  korean: string;
+  spanish: string;
+}
+
+const words: Word[] = [
+  { korean: "집", spanish: "casa" },
+  { korean: "가정", spanish: "hogar" },
+  { korean: "방", spanish: "habitación" },
+  { korean: "거실", spanish: "comedor" },
+  { korean: "주방", spanish: "cocina" },
+  { korean: "화장실", spanish: "baño" },
+  { korean: "침실", spanish: "dormitorio" },
+  { korean: "욕실", spanish: "baño (donde hay bañera)" },
+  { korean: "현관", spanish: "entrada para los zapatos" },
+  { korean: "다락방", spanish: "ático" },
+  { korean: "지하실", spanish: "sótano" },
+  { korean: "마당", spanish: "patio exterior (antes de entrar a la casa)" },
+  { korean: "정원", spanish: "jardín" },
+  { korean: "창문", spanish: "ventana" },
+  { korean: "문", spanish: "puerta" },
+  { korean: "천장", spanish: "techo (por dentro)" },
+  { korean: "바닥", spanish: "suelo" },
+  { korean: "벽", spanish: "pared" },
+  { korean: "가구", spanish: "mueble" },
+  { korean: "소파", spanish: "sofá" },
+  { korean: "테이블", spanish: "mesa" },
+  { korean: "의자", spanish: "silla" },
+  { korean: "침대", spanish: "cama" },
+  { korean: "옷장", spanish: "armario" },
+  { korean: "서랍장", spanish: "mueble de cajones" },
+  { korean: "식탁", spanish: "mesa de comedor" },
+  { korean: "책장", spanish: "estantería de libros" },
+  { korean: "선반", spanish: "repisas o estantes de repisas" },
+  { korean: "커튼", spanish: "cortina" },
+  { korean: "카펫", spanish: "alfombra" },
+  { korean: "조명", spanish: "luz (general)" },
+  { korean: "냉장고", spanish: "nevera" },
+  { korean: "가스레인지", spanish: "cocina de gas" },
+  { korean: "오븐", spanish: "horno" },
+  { korean: "전자레인지", spanish: "microondas" },
+  { korean: "세탁기", spanish: "lavadora" },
+  { korean: "청소기", spanish: "aspiradora" },
+  { korean: "에어컨", spanish: "aire acondicionado" },
+  { korean: "난로", spanish: "estufa" },
+  { korean: "벽지", spanish: "papel de la pared" },
+  { korean: "창틀", spanish: "marco de la ventana" },
+  { korean: "열쇠", spanish: "llaves" },
+  { korean: "수도꼭지", spanish: "grifo" },
+  { korean: "세면대", spanish: "lavabo" },
+  { korean: "거울", spanish: "espejo" },
+  { korean: "장식품", spanish: "decoración" },
+  { korean: "식기", spanish: "vajilla" },
+  { korean: "침구", spanish: "edredón, manta, almohada (cosas para dormir)" },
+  { korean: "휴지통", spanish: "papelera" },
+  { korean: "식기세척기", spanish: "lavavajillas" }
+];
+
+const KoreanVocabularyGame: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [password, setPassword] = useState('');
+  const [gameWords, setGameWords] = useState<Word[]>([]);
+  const [currentWords, setCurrentWords] = useState<Word[]>([]);
+  const [currentWord, setCurrentWord] = useState<Word | null>(null);
+  const [score, setScore] = useState(0);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+
+  const correctPassword = "bts";
+
+  const handleLogin = () => {
+    if (password === correctPassword) {
+      setIsLoggedIn(true);
+      startGame();
+    } else {
+      alert("Contraseña incorrecta.");
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleLogin();
+    }
+  };
+
+  const startGame = () => {
+    setGameWords([...words]);
+    setScore(0);
+    setGameStarted(true);
+    generateWords([...words]);
+  };
+
+  const generateWords = (availableWords: Word[]) => {
+    if (availableWords.length === 0) {
+      endGame();
+      return;
     }
 
-    #loginArea, #gameArea {
-      position: absolute;
-      width: 60%;
-      max-width: 400px;
-      max-height: 90vh;
-      background: white;
-      border: 2px solid #000;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-      padding: 10px;
-      text-align: center;
-      display: none;
-      flex-direction: column;
-    }
+    const shuffled = [...availableWords].sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, Math.min(5, shuffled.length));
+    setCurrentWords(selected);
+    setCurrentWord(selected[Math.floor(Math.random() * selected.length)]);
+    setSelectedAnswer(null);
+  };
 
-    #loginArea.active, #gameArea.active {
-      display: flex;
-    }
-
-    #score {
-      font-size: 18px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    #wordSquare {
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    #targetSquare {
-      width: 90%;
-      height: 12%;
-      margin: auto;
-      border: 2px solid #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 16px;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    #questionText {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .word-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .word {
-      font-size: 16px;
-      padding: 5px 10px;
-      border: 1px solid #000;
-      border-radius: 5px;
-      background: #f0f0f0;
-      cursor: pointer;
-      user-select: none;
-      color: black;
-      text-align: center;
-      transition: background-color 0.3s;
-    }
-
-    .correct {
-      background: #4caf50 !important;
-      color: white;
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 8px 15px;
-      font-size: 14px;
-      border-radius: 5px;
-      background: #4caf50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-  <div id="loginArea" class="active">
-    <h1>¡VOCABULARIO SOBRE HOGAR CON BTS!</h1>
-    <p>Introduce la contraseña:</p>
-    <input type="password" id="passwordInput" placeholder="Contraseña" />
-    <button id="enterButton">Enter</button>
-  </div>
-
-  <div id="gameArea">
-    <div id="score">Puntuación: 0</div>
-    <div id="wordSquare"></div>
-    <div id="targetSquare">이 단어는 <span id="blank">________</span> 입니다</div>
-    <div id="questionText">¿Qué palabra es?</div>
-    <div class="word-container" id="wordContainer"></div>
-  </div>
-
-  <script>
-    const correctPassword = "bts";
-
-    // Maneja el ingreso de la contraseña
-    document.getElementById("enterButton").addEventListener("click", checkPassword);
-    document.getElementById("passwordInput").addEventListener("keypress", function (event) {
-      if (event.key === "Enter") {
-        checkPassword();
-      }
-    });
-
-    function checkPassword() {
-      const input = document.getElementById("passwordInput").value;
-      if (input === correctPassword) {
-        document.getElementById("loginArea").classList.remove("active");
-        document.getElementById("gameArea").classList.add("active");
-        startGame();
-      } else {
-        alert("Contraseña incorrecta.");
-      }
-    }
-
-    const words = [
-      // Lista de palabras en coreano y su traducción al español
-      { korean: "집", spanish: "casa" },
-      { korean: "가정", spanish: "hogar" },
-      { korean: "방", spanish: "habitación" },
-      { korean: "거실", spanish: "comedor" },
-      { korean: "주방", spanish: "cocina" },
-      { korean: "화장실", spanish: "baño" },
-      { korean: "침실", spanish: "dormitorio" },
-      { korean: "욕실", spanish: "baño (donde hay bañera)" },
-      { korean: "현관", spanish: "entrada para los zapatos" },
-      { korean: "다락방", spanish: "ático" },
-      { korean: "지하실", spanish: "sótano" },
-      { korean: "마당", spanish: "patio exterior (antes de entrar a la casa)" },
-      { korean: "정원", spanish: "jardín" },
-      { korean: "창문", spanish: "ventana" },
-      { korean: "문", spanish: "puerta" },
-      { korean: "천장", spanish: "techo (por dentro)" },
-      { korean: "바닥", spanish: "suelo" },
-      { korean: "벽", spanish: "pared" },
-      { korean: "가구", spanish: "mueble" },
-      { korean: "소파", spanish: "sofá" },
-      { korean: "테이블", spanish: "mesa" },
-      { korean: "의자", spanish: "silla" },
-      { korean: "침대", spanish: "cama" },
-      { korean: "옷장", spanish: "armario" },
-      { korean: "서랍장", spanish: "mueble de cajones" },
-      { korean: "식탁", spanish: "mesa de comedor" },
-      { korean: "책장", spanish: "estantería de libros" },
-      { korean: "선반", spanish: "repisas o estantes de repisas" },
-      { korean: "커튼", spanish: "cortina" },
-      { korean: "카펫", spanish: "alfombra" },
-      { korean: "조명", spanish: "luz (general)" },
-      { korean: "냉장고", spanish: "nevera" },
-      { korean: "가스레인지", spanish: "cocina de gas" },
-      { korean: "오븐", spanish: "horno" },
-      { korean: "전자레인지", spanish: "microondas" },
-      { korean: "세탁기", spanish: "lavadora" },
-      { korean: "청소기", spanish: "aspiradora" },
-      { korean: "에어컨", spanish: "aire acondicionado" },
-      { korean: "난로", spanish: "estufa" },
-      { korean: "벽지", spanish: "papel de la pared" },
-      { korean: "창틀", spanish: "marco de la ventana" },
-      { korean: "열쇠", spanish: "llaves" },
-      { korean: "수도꼭지", spanish: "grifo" },
-      { korean: "세면대", spanish: "lavabo" },
-      { korean: "거울", spanish: "espejo" },
-      { korean: "장식품", spanish: "decoración" },
-      { korean: "식기", spanish: "vajilla" },
-      { korean: "침구", spanish: "edredón, manta, almohada (cosas para dormir)" },
-      { korean: "휴지통", spanish: "papelera" },
-      { korean: "식기세척기", spanish: "lavavajillas" },
-      // Agregar más palabras según sea necesario
-    ];
-
-    let currentWords = []; // Palabras actualmente mostradas
-    let currentWord = null; // Palabra correcta actual
-    let score = 0; // Puntuación del jugador
-
-    // Inicia el juego
-    function startGame() {
-      score = 0;
-      document.getElementById("score").textContent = `Puntuación: ${score}`;
-      generateWords();
-    }
-
-    // Genera las palabras a mostrar
-    function generateWords() {
-      const wordContainer = document.getElementById("wordContainer");
-      wordContainer.innerHTML = ""; // Limpia las palabras anteriores
-
-      // Mezcla y selecciona palabras
-      currentWords = words.sort(() => 0.5 - Math.random()).slice(0, Math.min(5, words.length));
-
-      // Termina el juego si ya no hay palabras
-      if (currentWords.length === 0) {
-        endGame();
-        return;
-      }
-
-      currentWord = currentWords[Math.floor(Math.random() * currentWords.length)];
-      document.getElementById("wordSquare").innerHTML = `<strong>${currentWord.spanish}</strong>`;
-
-      // Crea los botones de las palabras
-      currentWords.forEach(word => {
-        const wordElement = document.createElement("div");
-        wordElement.textContent = word.korean;
-        wordElement.className = "word";
-
-        wordElement.addEventListener("click", () => checkWord(wordElement, word.korean));
-
-        wordContainer.appendChild(wordElement);
+  const checkWord = (selectedWord: string) => {
+    setSelectedAnswer(selectedWord);
+    
+    if (selectedWord === currentWord?.korean) {
+      setScore(prev => prev + 1);
+      
+      // Reproducir audio
+      const audio = new Audio(`audio/${selectedWord}.mp3`);
+      audio.play().catch(() => {
+        // Manejo silencioso si el audio no está disponible
       });
+
+      // Eliminar palabra correcta
+      const newGameWords = gameWords.filter(word => word.korean !== currentWord.korean);
+      setGameWords(newGameWords);
+      
+      setTimeout(() => generateWords(newGameWords), 1000);
+    } else {
+      setTimeout(() => generateWords(gameWords), 1000);
     }
+  };
 
-    // Verifica si la palabra seleccionada es correcta
-    function checkWord(element, selectedWord) {
-      if (selectedWord === currentWord.korean) {
-        element.classList.add("correct");
-        score++;
-        document.getElementById("score").textContent = `Puntuación: ${score}`;
+  const endGame = () => {
+    const incorrectCount = words.length - score;
+    alert(`¡Felicidades! Has repasado todas las palabras.\nTuviste ${score} aciertos y ${incorrectCount} fallos.`);
+    setIsLoggedIn(false);
+    setGameStarted(false);
+    setPassword('');
+  };
 
-        // Reproducir audio de la palabra
-        const audio = new Audio(`audio/${selectedWord}.mp3`);
-        audio.play();
+  if (!isLoggedIn) {
+    return (
+      <div 
+        className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('fondo/fondo2.png')" }}
+      >
+        <div className="w-full max-w-md mx-4">
+          <div className="bg-white rounded-xl shadow-2xl border-2 border-gray-200 p-8">
+            <div className="text-center space-y-6">
+              <div className="space-y-2">
+                <h1 className="text-2xl font-bold text-gray-800">
+                  ¡VOCABULARIO SOBRE HOGAR CON BTS!
+                </h1>
+                <div className="w-16 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"></div>
+              </div>
+              
+              <div className="space-y-4">
+                <p className="text-gray-600 font-medium">Introduce la contraseña:</p>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Contraseña"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none transition-colors duration-200 text-center"
+                />
+                <button
+                  onClick={handleLogin}
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 px-6 rounded-lg hover:from-purple-600 hover:to-pink-600 transform hover:scale-105 transition-all duration-200 shadow-lg"
+                >
+                  ENTRAR
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-        // Elimina la palabra correcta del conjunto
-        words.splice(words.findIndex(word => word.korean === currentWord.korean), 1);
+  return (
+    <div 
+      className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat p-4"
+      style={{ backgroundImage: "url('fondo/fondo2.png')" }}
+    >
+      <div className="w-full max-w-2xl">
+        <div className="bg-white rounded-xl shadow-2xl border-2 border-gray-200 p-6 space-y-6">
+          {/* Header con puntuación */}
+          <div className="text-center">
+            <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-bold text-lg shadow-lg">
+              <span className="mr-2">🏆</span>
+              Puntuación: {score}
+            </div>
+          </div>
 
-        setTimeout(generateWords, 500);
-      } else {
-        element.style.backgroundColor = "red"; // Cambia el color a rojo para indicar error
-        setTimeout(generateWords, 500); // Pasa a la siguiente palabra
-      }
-    }
+          {/* Palabra a traducir */}
+          {currentWord && (
+            <div className="text-center space-y-4">
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-2 border-gray-200 rounded-xl p-6">
+                <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                  {currentWord.spanish}
+                </h2>
+                <div className="text-lg text-gray-600 font-medium">
+                  이 단어는 <span className="text-purple-600 font-bold">________</span> 입니다
+                </div>
+              </div>
+              
+              <div className="text-lg font-semibold text-gray-700">
+                ¿Qué palabra es?
+              </div>
+            </div>
+          )}
 
-    // Finaliza el juego
-    function endGame() {
-      const incorrectCount = 51 - score; // Calcula los fallos
-      alert(`¡Felicidades! Has repasado todas las palabras.\nTuviste ${score} aciertos y ${incorrectCount} fallos.`);
-      document.getElementById("gameArea").classList.remove("active");
-      document.getElementById("loginArea").classList.add("active");
-    }
-  </script>
-</body>
-</html>
+          {/* Opciones de respuesta */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {currentWords.map((word, index) => {
+              let buttonClass = "w-full p-4 border-2 border-gray-200 rounded-lg font-medium text-lg transition-all duration-200 hover:scale-105 hover:shadow-md ";
+              
+              if (selectedAnswer === word.korean) {
+                if (word.korean === currentWord?.korean) {
+                  buttonClass += "bg-green-500 text-white border-green-500 shadow-lg";
+                } else {
+                  buttonClass += "bg-red-500 text-white border-red-500 shadow-lg";
+                }
+              } else {
+                buttonClass += "bg-white text-gray-800 hover:bg-gray-50 hover:border-purple-300";
+              }
+
+              return (
+                <button
+                  key={index}
+                  onClick={() => checkWord(word.korean)}
+                  disabled={selectedAnswer !== null}
+                  className={buttonClass}
+                >
+                  {word.korean}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Indicador de progreso */}
+          <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
+            <div 
+              className="bg-gradient-to-r from-purple-500 to-pink-500 h-full transition-all duration-300 ease-out"
+              style={{ width: `${(score / words.length) * 100}%` }}
+            ></div>
+          </div>
+          
+          <div className="text-center text-sm text-gray-600">
+            Progreso: {score} / {words.length} palabras
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default KoreanVocabularyGame;
