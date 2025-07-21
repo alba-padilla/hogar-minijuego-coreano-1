@@ -4,228 +4,58 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>VOCABULARIO: HOGAR</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', 'Noto Sans KR', sans-serif;
-      background: #f8f9fc;
+      font-family: sans-serif;
+      background: #f9f9fb;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       height: 100vh;
-      overflow: hidden;
+      margin: 0;
     }
-
-    #loginArea, #gameArea {
-      position: absolute;
-      width: 90%;
-      max-width: 420px;
+    .box {
       background: white;
-      border-radius: 15px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       padding: 20px;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      animation: fadeIn 0.5s ease-in-out;
-    }
-
-    #loginArea.active, #gameArea.active {
-      display: flex;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    h1 {
-      font-size: 22px;
-      color: #333;
-      margin-bottom: 15px;
+      width: 300px;
       text-align: center;
     }
-
-    p {
-      margin: 10px 0;
-      color: #555;
-    }
-
-    input[type="password"] {
+    input, button {
       padding: 10px;
-      width: 80%;
+      width: 90%;
+      margin-top: 10px;
+      border-radius: 8px;
       border: 1px solid #ccc;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      font-size: 14px;
     }
-
     button {
-      padding: 10px 20px;
-      font-size: 14px;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #D4145A 0%, #FBB03B 100%);
+      background: #4f46e5;
       color: white;
-      border: none;
       cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background: linear-gradient(90deg, #B9134F 0%, #FFA700 100%);
-    }
-
-    #score {
-      font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #333;
-    }
-
-    #wordSquare {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #333;
-    }
-
-    #targetSquare {
-      width: 100%;
-      padding: 10px;
-      border: 2px dashed #aaa;
-      border-radius: 12px;
-      margin-bottom: 15px;
-      font-size: 15px;
-      background: #f1f3f5;
-      text-align: center;
-    }
-
-    #questionText {
-      font-size: 15px;
-      margin-bottom: 10px;
-      color: #444;
-    }
-
-    .word-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .word {
-      font-size: 14px;
-      padding: 6px 12px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      background: #edf2ff;
-      cursor: pointer;
-      user-select: none;
-      transition: all 0.2s;
-    }
-
-    .word:hover {
-      background: #dbe4ff;
-    }
-
-    .correct {
-      background: #4caf50 !important;
-      color: white;
     }
   </style>
 </head>
 <body>
-  <div id="loginArea" class="active">
-    <h1>🧠 VOCABULARIO DEL HOGAR CON BTS 🏠</h1>
-    <p>Introduce la contraseña para comenzar:</p>
-    <input type="password" id="passwordInput" placeholder="Contraseña" />
-    <button id="enterButton">Ingresar</button>
+  <div class="box" id="loginBox">
+    <h2>Ingresar contraseña</h2>
+    <input type="password" id="passwordInput" placeholder="Contraseña"/>
+    <button onclick="checkPassword()">Entrar</button>
   </div>
 
-  <div id="gameArea">
-    <div id="score">Puntuación: 0</div>
-    <div id="wordSquare"></div>
-    <div id="targetSquare">이 단어는 <span id="blank">________</span> 입니다</div>
-    <div id="questionText">¿Qué palabra es?</div>
-    <div class="word-container" id="wordContainer"></div>
+  <div class="box" id="gameBox" style="display:none;">
+    <p>¡Bienvenido! Juego iniciado 🎉</p>
   </div>
 
   <script>
-    const correctPassword = "bts";
-
-    document.getElementById("enterButton").addEventListener("click", checkPassword);
-    document.getElementById("passwordInput").addEventListener("keypress", function (event) {
-      if (event.key === "Enter") checkPassword();
-    });
-
     function checkPassword() {
-      const input = document.getElementById("passwordInput").value;
-      if (input === correctPassword) {
-        document.getElementById("loginArea").classList.remove("active");
-        document.getElementById("gameArea").classList.add("active");
-        startGame();
+      const pass = document.getElementById('passwordInput').value;
+      if (pass === 'bts') {
+        document.getElementById('loginBox').style.display = 'none';
+        document.getElementById('gameBox').style.display = 'block';
       } else {
-        alert("Contraseña incorrecta.");
+        alert('Contraseña incorrecta');
       }
-    }
-
-    const words = [/* (tu lista larga se mantiene igual aquí) */];
-
-    let currentWords = [];
-    let currentWord = null;
-    let score = 0;
-
-    function startGame() {
-      score = 0;
-      document.getElementById("score").textContent = `Puntuación: ${score}`;
-      generateWords();
-    }
-
-    function generateWords() {
-      const wordContainer = document.getElementById("wordContainer");
-      wordContainer.innerHTML = "";
-
-      currentWords = words.sort(() => 0.5 - Math.random()).slice(0, Math.min(5, words.length));
-      if (currentWords.length === 0) {
-        endGame();
-        return;
-      }
-
-      currentWord = currentWords[Math.floor(Math.random() * currentWords.length)];
-      document.getElementById("wordSquare").innerHTML = `<strong>${currentWord.spanish}</strong>`;
-
-      currentWords.forEach(word => {
-        const wordElement = document.createElement("div");
-        wordElement.textContent = word.korean;
-        wordElement.className = "word";
-        wordElement.addEventListener("click", () => checkWord(wordElement, word.korean));
-        wordContainer.appendChild(wordElement);
-      });
-    }
-
-    function checkWord(element, selectedWord) {
-      if (selectedWord === currentWord.korean) {
-        element.classList.add("correct");
-        score++;
-        document.getElementById("score").textContent = `Puntuación: ${score}`;
-        const audio = new Audio(`audio/${selectedWord}.mp3`);
-        audio.play();
-        words.splice(words.findIndex(word => word.korean === currentWord.korean), 1);
-        setTimeout(generateWords, 500);
-      } else {
-        element.style.backgroundColor = "#e03131";
-        element.style.color = "white";
-        setTimeout(generateWords, 500);
-      }
-    }
-
-    function endGame() {
-      const incorrectCount = 51 - score;
-      alert(`¡Felicidades! Has repasado todas las palabras.\nTuviste ${score} aciertos y ${incorrectCount} fallos.`);
-      document.getElementById("gameArea").classList.remove("active");
-      document.getElementById("loginArea").classList.add("active");
     }
   </script>
 </body>
